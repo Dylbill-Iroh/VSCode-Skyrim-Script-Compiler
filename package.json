@@ -1,0 +1,108 @@
+{
+  "name": "skyrim-script-compiler",
+  "displayName": "Skyrim Script Compiler",
+  "description": "Compile skyrim papyrus scripts.",
+  "version": "0.0.1",
+  "publisher": "Dylbill",
+  "license": "MIT",
+	"keywords": [
+		"papyrus",
+		"compiler",
+    "skyrim",
+		"creation kit"
+	],
+  "engines": {
+    "vscode": "^1.81.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "configuration": [
+			{
+				"title": "Skyrim Script Compiler Configuration",
+				"properties": {
+          "DylbillsVsSkyrimScriptCompiler.AlwaysOutputToSkyrimScriptsFolder": {
+						"type": "boolean",
+						"default": "true",
+						"description": "If checked, puts compiled .pex scripts in your skyrm or skyrim special edition/data/scripts folder as well as the Pex Output Folder. If no Pex Folder is set, .pex files are put here regardless.",
+						"scope": "window"
+					},
+          "DylbillsVsSkyrimScriptCompiler.GloballySaveSkyrimRootPath": {
+						"type": "boolean",
+						"default": "true",
+						"description": "If checked, saves last detected skyrim root folder Globally and is loaded globally when you restart VS code. Otherwise saves to current workspace.",
+						"scope": "window"
+					},
+          "DylbillsVsSkyrimScriptCompiler.OutputFolderPex": { 
+						"type": "string",
+						"default": "",
+						"description": "Optional Full path to folder that compiled .pex files are sent to. If this isn't set, .pex files go to skyrm or skyrim special edition/data/scripts.",
+						"scope": "window"
+					},
+          "DylbillsVsSkyrimScriptCompiler.OutputFolderPsc": {
+						"type": "string",
+						"default": "",
+						"description": "Optional Full path to folder that source .psc scripts are copied to when compiling.",
+						"scope": "window"
+					},
+          "DylbillsVsSkyrimScriptCompiler.SoundFilePathSuccess": {
+						"type": "string",
+						"default": "",
+						"description": "Full path to sound that's played when succesfully compiling a script.",
+						"scope": "window"
+					},
+					"DylbillsVsSkyrimScriptCompiler.SoundFilePathFail": {
+						"type": "string",
+						"default": "",
+						"description": "Full path to sound that's played when failing to compile a script.",
+						"scope": "window"
+					}
+				}
+			}
+		],
+    "commands": [
+      {
+        "command": "skyrim-script-compiler.CompileScript",
+        "title": "Skyrim Script Compiler - Compile Current Script",
+        "description": "Compile current opened .psc script."
+      },
+      {
+        "command": "skyrim-script-compiler.CompileAllScripts",
+        "title": "Skyrim Script Compiler - Compile all scripts in current folder",
+        "description": "Compile all .psc scripts in the folder that the current opened .psc script is in."
+      },
+      {
+        "command": "skyrim-script-compiler.SetPexOutputFolder",
+        "title": "Skyrim Script Compiler - Set Pex Folder to current file location."
+      },
+      {
+        "command": "skyrim-script-compiler.SetPscOutputFolder",
+        "title": "Skyrim Script Compiler - Set Psc Folder to current file location."
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.81.0",
+    "@types/glob": "^8.1.0",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "20.2.5",
+    "@typescript-eslint/eslint-plugin": "^5.59.8",
+    "@typescript-eslint/parser": "^5.59.8",
+    "eslint": "^8.41.0",
+    "glob": "^8.1.0",
+    "mocha": "^10.2.0",
+    "typescript": "^5.1.3",
+    "@vscode/test-electron": "^2.3.2"
+  }
+}
