@@ -3,11 +3,20 @@ Allows VS Code to compile script (.psc) files for skyrim LE and SE / AE.
 
 ## Features
 - Compile script that's currently open, or all scripts in folder that current source script is in.
-- Play custom sounds for compile success or failure
-- Auto detects which compilier to use based on where the source script is located
+- Play custom sounds for compile success or failure.
+- Auto detects which compilier to use based on where the source script is located.
+- Option to auto compile .psc script when saving.
+- Copy .pex and .psc files to set folder(s) when compiling.
+- Print .psc data (Script, Function and Event Names) from base game for use with syntax highlighting.
 
 ## Commands 
-Access commands by pressing ctrl + shift + p and search for Skyrim Script Compiler - 
+Access commands by pressing ctrl + shift + p and search for Skyrim Script Compiler
+
+"Skyrim Script Compiler - print Psc Data" command will print native or global function and event names to output seperated by "|", from the last detected base game source scripts folder.
+
+This is to use for syntax highlighting. Specifically I use it with the Papyrus Code extension by Scrivener07.
+Navigate to "C:\Users\YourUserName\.vscode\extensions\scrivener07.papyrus-1.0.0\syntaxes\papyrus\papyrus.json". 
+There you can copy the Script Names to "class-types" and functions to "builtin-funcs" to include them with syntax highlighting.
 
 ## How to use
 To set which game version to compile from, first compile a script from the actual game folder's source scripts. E.G Skyrim/Scripts/Source, Skyrim Special Edition/Scripts/Source or Skyrim Special Edition/Source/Scripts. This will set the compiler, flags and source folder the extension uses. After, you can compile a .psc script from anywhere and this will use the last source, compiler and flags detected.

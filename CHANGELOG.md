@@ -2,8 +2,28 @@
 
 All notable changes to the "skyrim-script-compiler" extension will be documented in this file.
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
-
 ## [Unreleased]
 
 - Initial release
+
+## [0.0.2] - 2023-08-24
+### Added
+- User defined pex and psc output folders can now have multiple folder path's seperated by a semicolon ;
+- Added command: Skyrim Script Compiler - Add Current File Location to Pex Output Folders.
+- Added command: Skyrim Script Compiler - Add Current File Location to Psc Output Folders.
+- Added option to auto compile scripts when saving.
+
+### Fixed
+- Added extension active check for all functions.
+- Updated README to reflect new features added.
+
+## [0.0.3] - 2023-08-24
+### Fixed
+- Removed unnecessary notifications.
+
+## [0.0.4] - 2023-08-24
+### Added
+- Added "Skyrim Script Compiler - print Psc Data" command.
+
+### Fixed
+- Removed yet another unnecessary notifications.
