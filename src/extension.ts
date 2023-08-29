@@ -495,7 +495,7 @@ export function compileCurrentScript(){
 									});
 								}
 								if (hadAnErr){
-									errorNotification(""); //play error sound if there is one
+									errorNotification("copy error"); //play error sound if there is one
 									compilerOutput.show();
 								}
 							}
@@ -510,8 +510,9 @@ export function compileCurrentScript(){
 									outputFolders.splice(i, 1);
 								}
 							}
-							compilerOutput.appendLine("outputFolders = " + outputFolders);
-							compilerOutput.show();
+
+							//compilerOutput.appendLine("outputFolders = " + outputFolders);
+							//compilerOutput.show();
 
 							m = outputFolders.length;
 
@@ -530,7 +531,7 @@ export function compileCurrentScript(){
 									});
 								}
 								if (hadAnErr){
-									errorNotification(""); //play error sound if any
+									errorNotification("copy error"); //play error sound if any
 									compilerOutput.show();
 								}
 							}
@@ -648,8 +649,8 @@ export async function compileAllScripts(){
                                 }
                             }
 
-                            compilerOutput.appendLine("pexOutputFolders = " + pexOutputFolders);
-                            compilerOutput.show();
+                            //compilerOutput.appendLine("pexOutputFolders = " + pexOutputFolders);
+                            //compilerOutput.show();
 
                             m = pexOutputFolders.length;
 
@@ -675,7 +676,7 @@ export async function compileAllScripts(){
                             }
                             
                             if (hadAnErr){
-                                errorNotification(""); //play error sound if any
+                                errorNotification("copy error"); //play error sound if any
                                 compilerOutput.show();
                             }
                         }
@@ -715,7 +716,7 @@ export async function compileAllScripts(){
                             }
 
                             if (hadAnErr){
-                                errorNotification(""); //play error sound if any
+                                errorNotification("copy error"); //play error sound if any
                                 compilerOutput.show();
                             }
                         }
@@ -737,11 +738,116 @@ export async function printPscData(){
     }
 
     let scriptNames = "action|activator|activemagiceffect|actor|actorbase|actorvalue|alias|ammo|armor|associationtype|book|camerashot|cell|class|combatstyle|commonarrayfunctions|component|constructibleobject|container|debug|door|effectshader|enchantment|encounterzone|explosion|faction|flora|form|formlist|furniture|game|globalvariable|hazard|headpart|holotape|idle|idlemarker|imagespacemodifier|impactdataset|ingredient|inputenablelayer|instancenamingrules|key|keyword|leveledactor|leveleditem|leveledspell|light|location|locationalias|locationreftype|magiceffect|math|message|miscobject|movablestatic|musictype|objectmod|objectreference|outfit|outputmodel|package|perk|potion|projectile|quest|race|refcollectionalias|referencealias|scene|scriptobject|scroll|shaderparticlegeometry|shout|soulgem|sound|soundcategory|soundcategorysnapshot|spell|static|talkingactivator|terminal|textureset|topic|topicinfo|utility|visualeffect|voicetype|weapon|weather|wordofpower|worldspace";
-    let sFunction = "function";
     let functions = "abs|acos|activate|add|addachievement|addarray|addform|addinventoryeventfilter|additem|addkeyifneeded|addkeyword|addlinkedlocation|addperk|addperkpoints|addref|addrefcollection|addspell|addtextreplacementdata|addtofaction|addtomap|advanceskill|allowbleedoutdialogue|allowcompanion|allowpcdialogue|apply|applyconveyorbelt|applycrossfade|applyfanmotor|applyhavokimpulse|applytoref|asin|atan|attachashpile|attachmod|attachmodtoinventoryitem|attachto|attemptanimationsetswitch|blockactivation|calculateencounterlevel|callfunction|callfunctionnowait|callglobalfunction|callglobalfunctionnowait|canceltimer|canceltimergametime|canfasttraveltomarker|canflyhere|canpaycrimegold|canproduceforworkshop|cast|castas|ceiling|centeroncell|centeroncellandwait|changeanimarchetype|changeanimfacearchetype|changeanimflavor|changeheadpart|checkactoragainstfactionarray|checkformagainstarray|checklocationagainstarray|checklocationagainstlocationaliasarray|checkobjectagainstkeywordarray|checkobjectreferenceagainstarray|checkobjectreferenceagainstreferencealiasarray|clear|cleararrested|cleardestruction|clearexpressionoverride|clearextraarrows|clearforcedlandingmarker|clearhelpmessages|clearlookat|clearprison|cleartempeffects|closeuserlog|completeallobjectives|completequest|conveyorbelton|cos|countactors|countactorslinkedtome|countlinkedrefchain|countrefslinkedtome|create|createdetectionevent|damageobject|damagevalue|degreestoradians|delete|deletewhenable|disable|disableall|disablelinkchain|disablenowait|disableplayercontrols|disallowcompanion|dismember|dismount|dispel|dispelallspells|dispelspell|docombatspellapply|dogdropitems|dogplaceinmouth|drawweapon|drop|dropfirstobject|dropobject|dumpaliasdata|dumpeventregistrations|enable|enableactivate|enableai|enableall|enableambientparticles|enablecamswitch|enablecollisions|enabledetection|enablefasttravel|enablefavorites|enablefighting|enablejournal|enablelinkchain|enablelooking|enablemenu|enablemenus|enablemovement|enablenowait|enablepipboyhdrmask|enableplayercontrols|enablerunning|enablesneaking|enablesprinting|enablevats|enablezkey|enddeferredkill|equipitem|equipspell|error|evaluateall|evaluatepackage|fadeoutgame|failallobjectives|fanmotoron|fasttravel|find|findallreferencesoftype|findallreferenceswithkeyword|findclosestactor|findclosestactorfromref|findclosestreferenceofanytypeinlist|findclosestreferenceofanytypeinlistfromref|findclosestreferenceoftype|findclosestreferenceoftypefromref|findinreferencealiasarray|findrandomactor|findrandomactorfromref|findrandomreferenceofanytypeinlist|findrandomreferenceofanytypeinlistfromref|findrandomreferenceoftype|findrandomreferenceoftypefromref|findweather|fire|floor|followerfollow|followersetdistancefar|followersetdistancemedium|followersetdistancenear|followerwait|forceaddragdolltoworld|forcedisablessrgodraysdirlight|forcefirstperson|forcelocationto|forcerefifempty|forcerefto|forceremoveragdollfromworld|forcestart|forcethirdperson|gametimetostring|getactorbase|getactorowner|getactorreference|getactorrefowner|getactors|getactorslinkedtome|getaggressionav|getagilityav|getalias|getallcombattargets|getalllinkedlocations|getammo|getanglex|getangley|getanglez|getanimationvariablebool|getanimationvariablefloat|getanimationvariableint|getassociatedform|getassociatedskill|getat|getbaseobject|getbasevalue|getbribeamount|getcaps|getcasteractor|getcharismaav|getclass|getcombatstate|getcombattarget|getcomponentcount|getconfidenceav|getconfigname|getcontainer|getcount|getcrimefaction|getcrimegold|getcrimegoldnonviolent|getcrimegoldviolent|getcurrentdestructionstage|getcurrentgametime|getcurrentlocation|getcurrentpackage|getcurrentrealtime|getcurrentscene|getcurrentstackid|getcurrentstageid|getcurrentweather|getcurrentweathertransition|getdeadcount|getdialoguetarget|getdifficulty|getdistance|geteditorlocation|getencounterzone|getenduranceav|getequippeditemtype|getequippedshield|getequippedspell|getequippedweapon|getfactionowner|getfactionrank|getfactionreaction|getfirstfoundfactioninarrayforactor|getfirstfoundkeywordinarrayforlocation|getfirstownedobject|getflyingstate|getforcedlandingmarker|getform|getformfromfile|getformid|getgamesettingfloat|getgamesettingint|getgamesettingstring|getgiftfilter|getgoldamount|getgoldvalue|getheadingangle|gethealthav|getheight|gethighestrelationshiprank|getinfamy|getinfamynonviolent|getinfamyviolent|getintelligenceav|getinventoryvalue|getitemcount|getitemhealthpercent|getkey|getkeyworddata|getkiller|getlength|getlevel|getleveledactorbase|getlevelexact|getlightlevel|getlinkedref|getlinkedrefchain|getlinkedrefchildren|getlocation|getlocklevel|getlocreftypes|getlowestrelationshiprank|getluckav|getmass|getnobleedoutrecovery|getnthlinkedref|getobjectcomponentcount|getopenstate|getoutgoingweather|getowningquest|getparentcell|getperceptionav|getplatformname|getplayer|getplayercontrols|getplayerfollowers|getplayergrabbedref|getplayerlevel|getplayerradiofrequency|getplayerslastriddenhorse|getpositionx|getpositiony|getpositionz|getpropertyvalue|getqueststagedone|getrace|getradiofrequency|getradiovolume|getrealhourspassed|getreference|getrefslinkedtome|getreftypealivecount|getreftypedeadcount|getrelationshiprank|getresourcedamage|getsafeposition|getscale|getsex|getsitstate|getsize|getskymode|getsleepstate|getstate|getstolenitemvaluecrime|getstolenitemvaluenocrime|getstrengthav|getsuspiciousav|gettargetactor|getteleportcell|gettemplate|gettransitioncell|gettransmitterdistance|gettriggerobjectcount|getuniqueactor|getvalue|getvalueint|getvaluepercentage|getversionnumber|getvoicetype|getwidth|getworkshopownedobjects|getworkshopresourcedamage|getworkshopresourceobjects|getworldspace|getxpforlevel|giveplayercaps|gotostate|hasactorrefowner|hasassociation|hasbeensaid|hascommonparent|hasdetectionlos|hasdirectlos|haseffectkeyword|haseverbeencleared|hasfamilyrelationship|hasform|haskeyword|haskeywordinformlist|haslocreftype|hasmagiceffect|hasmagiceffectwithkeyword|hasnode|hasobjective|hasowner|hasparentrelationship|hasperk|hasreftype|hassharedpowergrid|hasspell|hidetitlesequencemenu|ignorefriendlyhits|incrementskill|incrementstat|initializemarkerdistances|interruptcast|is3dloaded|isactioncomplete|isactivatechild|isactivatecontrolsenabled|isactivateenabled|isactivationblocked|isactive|isactorinarrayhostiletoactor|isaienabled|isalarmed|isalerted|isallowedtofly|isarrested|isarrestingtarget|isattached|isbeingridden|isbeingriddenby|isbleedingout|isboundgameobjectavailable|isbribed|iscamswitchcontrolsenabled|iscamswitchenabled|ischild|iscleared|iscommandedactor|iscompleted|isconveyorbelton|iscreated|isdead|isdeleted|isdestroyed|isdetectedby|isdisabled|isdismembered|isdoingfavor|isenabled|isequipped|isessential|isfactionincrimegroup|isfanmotoron|isfasttravelcontrolsenabled|isfasttravelenabled|isfavoritescontrolsenabled|isfavoritesenabled|isfightingcontrolsenabled|isfightingenabled|isflying|isfurnitureinuse|isfurnituremarkerinuse|isghost|isguard|ishostile|ishostiletoactor|isignoringfriendlyhits|isincombat|isindialoguewithplayer|isinfaction|isininterior|isinironsights|isinkillmove|isinlocation|isinmenumode|isinpowerarmor|isinscene|isinterior|isintimidated|isinvulnerable|isjournalcontrolsenabled|isjournalenabled|islinkedlocation|isloaded|islockbroken|islocked|islookingcontrolsenabled|islookingenabled|ismapmarkervisible|ismenucontrolsenabled|ismenuenabled|ismovementcontrolsenabled|ismovementenabled|isnearplayer|isobjectivecompleted|isobjectivedisplayed|isobjectivefailed|isonmount|isoverencumbered|isownedby|isownedobjectinlist|isowner|isplayerenemy|isplayerexpelled|isplayerinradiorange|isplayerlistening|isplayerradioon|isplayerslastriddenhorse|isplayerteammate|isplaying|isplugininstalled|ispowered|isprotected|isquestitem|isradio|isradioon|isrefintransitioncell|isrunning|isrunningenabled|issamelocation|isseatoccupied|issneaking|issneakingcontrolsenabled|issneakingenabled|issprinting|issprintingenabled|isstagedone|isstarting|isstopped|isstopping|istalking|isteleportarealoaded|istrespassing|isunconscious|isunique|isvatscontrolsenabled|isvatsenabled|isvatsplaybackactive|isweapondrawn|iswithinbuildablearea|iszkeyenabled|kill|killall|killessential|killsilent|knockareaeffect|learnalleffects|learneffect|learnnexteffect|linkcollectionto|lock|makeplayerfriend|makeradioreceiver|maketransmitterrepeater|markitemasfavorite|max|mergewith|messagebox|min|mod|modcrimegold|modfactionrank|modifykeyworddata|modobjectiveglobal|modvalue|moveallto|moveto|movetoifunloaded|movetomyeditorlocation|movetonearestnavmeshlocation|movetonode|movetopackagelocation|mute|notification|openinventory|openuserlog|openworkshopsettlementmenu|openworkshopsettlementmenuex|passtime|pathtoreference|pause|pauseaudio|placeactoratme|placeatme|placeatnode|play|playandwait|playanimation|playanimationandwait|playbink|playerknows|playermovetoandwait|playerpaycrimegold|playeventcamera|playgamebryoanimation|playidle|playidleaction|playidlewithtarget|playimpacteffect|playsubgraphanimation|playsyncedanimationandwaitss|playsyncedanimationss|playterraineffect|popto|pow|precachechargen|precachechargenclear|preloadexteriorcell|preloadtargetarea|processtraphit|push|pushactoraway|querystat|quitgame|quittomainmenu|radianstodegrees|ramprumble|randomfloat|randomint|recalculateresources|registerforanimationevent|registerforcustomevent|registerfordetectionlosgain|registerfordetectionloslost|registerfordirectlosgain|registerfordirectloslost|registerfordistancegreaterthanevent|registerfordistancelessthanevent|registerforhitevent|registerforlooksmenuevent|registerformagiceffectapplyevent|registerformenuopencloseevent|registerforplayersleep|registerforplayerteleport|registerforplayerwait|registerforradiationdamageevent|registerforremoteevent|registerfortrackedstatsevent|registerfortutorialevent|releaseoverride|remotecast|remove|removeaddedform|removeall|removeallinventoryeventfilters|removeallitems|removeallmods|removeallmodsfrominventoryitem|removecomponents|removecrossfade|removefromallfactions|removefromfaction|removefromref|removeinventoryeventfilter|removeitem|removeitembycomponent|removekeyword|removelinkedlocation|removemod|removemodfrominventoryitem|removeperk|removeplayercaps|removeref|removespell|repair|requestautosave|requestmodel|requestsave|reset|resetall|resethealthandlimbs|resethelpmessage|resetkeyword|resetspeechchallenges|restorevalue|resumeaudio|resurrect|reverseconveyorbelt|revert|rewardplayerxp|say|saycustom|sellitem|sendassaultalarm|sendcustomevent|sendplayertojail|sendstealalarm|sendstoryevent|sendstoryeventandwait|sendtrespassalarm|servetime|setactivatetextoverride|setactive|setactorcause|setactorowner|setactorrefowner|setalert|setallowflying|setally|setalpha|setangle|setanimarchetypeconfident|setanimarchetypedepressed|setanimarchetypeelderly|setanimarchetypefriendly|setanimarchetypeirritated|setanimarchetypenervous|setanimarchetypeneutral|setanimationvariablebool|setanimationvariablefloat|setanimationvariableint|setattackactoronsight|setattractionactive|setavailabletobecompanion|setavoidplayer|setbribed|setcameratarget|setcandocommand|setchargenhudmode|setcleared|setcombatstyle|setcommandstate|setcompanion|setconveyorbeltvelocity|setcrimefaction|setcrimegold|setcrimegoldviolent|setcriticalstage|setcurrentstageid|setdestroyed|setdirectattarget|setdoganimarchetypeagitated|setdoganimarchetypealert|setdoganimarchetypeneutral|setdoganimarchetypeplayful|setdoingfavor|setenemy|setessential|seteyetexture|setfactionowner|setfactionrank|setfogcolor|setfogplanes|setfogpower|setfootik|setforcedlandingmarker|setfrequency|setghost|setgodmode|setharvested|sethaschargenskeleton|setheadtracking|setinchargen|setinibool|setinifloat|setiniint|setinistring|setinsidememoryhudmode|setinstancevolume|setintimidated|setinvulnerable|setkeyworddata|setlinkedref|setlocklevel|setlocreftype|setlookat|setmotiontype|setnobleedoutrecovery|setnofavorallowed|setnotshowonstealthmeter|setobjectivecompleted|setobjectivedisplayed|setobjectivefailed|setobjectiveskipped|setopen|setoutfit|setoverridevoicetype|setpersistloc|setplayeraidriven|setplayercontrols|setplayerenemy|setplayerexpelled|setplayerhastaken|setplayeronelevator|setplayerradiofrequency|setplayerreportcrime|setplayerresistingarrest|setplayerteammate|setposition|setpropertyvalue|setpropertyvaluenowait|setprotected|setpublic|setqueststage|setrace|setradiofrequency|setradioon|setradiovolume|setrelationshiprank|setrestrained|setscale|setsittingrotation|setsubgraphfloatvariable|setunconscious|setvalue|setvalueint|setvehicle|setvolume|shakecamera|shakecontroller|show|showallmapmarkers|showashelpmessage|showbartermenu|showfatiguewarningonhud|showfirstpersongeometry|showonpipboy|showperkvaultboyonhud|showpipboybootsequence|showpipboyplugin|showracemenu|showspecialmenu|showtitlesequencemenu|showtrainingmenu|sin|snapintointeraction|splinetranslateto|splinetranslatetoref|splinetranslatetorefnode|sqrt|start|startcannibal|startcombat|startcombatall|startdeferredkill|startdialoguecameraorcenterontarget|startfrenzyattack|startobjectprofiling|startscriptprofiling|startsneaking|startstackprofiling|startstackrootprofiling|starttimer|starttimergametime|starttitlesequence|startvampirefeed|startworkshop|stop|stopcombat|stopcombatalarm|stopdialoguecamera|stopinstance|stopobjectprofiling|stopscriptprofiling|stopstackprofiling|stopstackrootprofiling|stoptranslation|storeinworkshop|switchtopowerarmor|tan|tethertohorse|trace|traceandbox|traceconditional|traceconditionalglobal|tracefunction|traceself|tracestack|traceuser|translateto|translatetoref|trapsoul|triggerscreenblood|trytoaddtofaction|trytoclear|trytodisable|trytodisablenowait|trytoenable|trytoenablenowait|trytoevaluatepackage|trytogetvalue|trytokill|trytomoveto|trytoremovefromfaction|trytoreset|trytosetvalue|trytostopcombat|turnplayerradioon|unequipall|unequipitem|unequipitemslot|unequipspell|unlock|unlockowneddoorsincell|unmute|unpause|unregisterforallcustomevents|unregisterforallevents|unregisterforallhitevents|unregisterforallmagiceffectapplyevents|unregisterforallmenuopencloseevents|unregisterforallradiationdamageevents|unregisterforallremoteevents|unregisterforalltrackedstatsevents|unregisterforanimationevent|unregisterforcustomevent|unregisterfordistanceevents|unregisterforhitevent|unregisterforlooksmenuevent|unregisterforlos|unregisterformagiceffectapplyevent|unregisterformenuopencloseevent|unregisterforplayersleep|unregisterforplayerteleport|unregisterforplayerwait|unregisterforradiationdamageevent|unregisterforremoteevent|unregisterfortrackedstatsevent|unregisterfortutorialevent|unshowashelpmessage|updatecurrentinstanceglobal|usinggamepad|wait|waitfor3dload|waitforanimationevent|waitforworkshopresourcerecalc|waitgametime|waitmenumode|warning|willintimidatesucceed|wornhaskeyword|wouldbestealing|wouldrefusecommand|getstage|getstagedone|setstage|findstruct|insert|removelast|rfind|rfindstruct|forceactive|getclassification|setactive";
-    let sEvent = "event";
     let events = "";
+    let sDir = "";
+    let sDirScriptNames = "";
+    let sDirFunctions = "";
+    let sDirEvents = "";
+    let sFunction = "function";
+    let sEvent = "event";
     let count = 0;
+
+    let textEditor = vscode.window.activeTextEditor;
+
+    if (textEditor !== undefined){
+        //successNotification("output folder set");
+        
+        let fullFilePath = textEditor.document.fileName;
+        sDir = path.dirname(fullFilePath);
+
+        if (sDir !== undefined && sDir !== "" && sDir !== savedSkyrimSourcePath){
+            fs.readdirSync(sDir).forEach(file => {
+                let extt = path.extname(file);
+                if (extt === ".psc"){
+                    count += 1;
+                    if (count % 100 === 0){
+                        showNotification(count + ' psc files checked.');
+                    }
+                    
+                    const fileContents = fs.readFileSync((sDir + "\\" + file), 'utf-8');
+                    let lines = fileContents.split("\n");
+                    //compilerOutput.appendLine(count + ' psc files checked. Number of lines = ' + lines.length);
+
+                    for (let i = 0; i < lines.length; i ++){
+                        let line = lines[i].toLowerCase();
+
+                        let functionIndex = line.indexOf(sFunction);
+                        if(functionIndex !== -1){
+                            if (functionIndex !== 0){
+                                let char = line.charAt(functionIndex - 1);
+                                if (char !== " " && char !== "\t"){ //"function" not preceded by white space
+                                    continue;
+                                }
+                            }
+
+                            functionIndex += (sFunction.length);
+
+                            let iStart = getNextNonWhiteSpaceIndex(line, (functionIndex));
+                            
+                            if (iStart !== -1){
+                                if (iStart === functionIndex){ //no whitespace after "function"
+                                    continue;
+                                }
+
+                                let iEnd = line.indexOf("(", iStart); 
+                                if (iEnd !== -1){
+                                    let functionName = line.substring(iStart, iEnd) + "|";
+                                    if (sDirFunctions.indexOf("|" + functionName) === -1){
+                                        if (functionName.indexOf(' ') === -1 && functionName.indexOf("\t") === -1){
+
+                                            sDirFunctions += functionName;
+
+                                            let scriptNameNoExtension = file.slice(0, file.length - 4) + "|";
+                                            if (sDirScriptNames.indexOf("|" + scriptNameNoExtension) === -1){
+                                                sDirScriptNames += scriptNameNoExtension;
+                                            }
+                                            continue;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        let eventIndex = line.indexOf(sEvent);
+                        if(eventIndex !== -1){
+                            if (eventIndex !== 0){
+                                let char = line.charAt(eventIndex - 1);
+                                if (char !== " " && char !== "\t"){ //no white space before "event"
+                                    continue;
+                                }
+                            }
+
+                            eventIndex += (sEvent.length);
+                            let iStart = getNextNonWhiteSpaceIndex(line, (eventIndex));
+                        
+                            if (iStart !== -1){
+                                if (iStart === eventIndex){ //no whitespace after "event"
+                                    continue;
+                                }
+        
+                                let iEnd = line.indexOf("(", iStart);
+                                if (iEnd !== -1){
+                                    let eventName = line.substring(iStart, iEnd) + "|";
+                                    if (sDirEvents.indexOf("|" + eventName) === -1){
+                                        if (eventName.indexOf(' ') === -1 && eventName.indexOf("\t") === -1){
+                                        
+                                            sDirEvents += eventName;
+
+                                            let scriptNameNoExtension = file.slice(0, file.length - 4) + "|";
+                                            if (sDirScriptNames.indexOf("|" + scriptNameNoExtension) === -1){
+                                                sDirScriptNames += scriptNameNoExtension;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }            
+            });
+        }
+    }
 
     if (savedSkyrimSourcePath !== "" && savedSkyrimSourcePath !== undefined){
         compilerOutput.show();
@@ -845,14 +951,29 @@ export async function printPscData(){
         });
     }
 
-    let textEditor = vscode.window.activeTextEditor;
+    if (sDirScriptNames !== ""){
+        let sDirScriptNamesArray = sDirScriptNames.split("|");
+        sDirScriptNamesArray.sort();
+        sDirScriptNames = sDirScriptNamesArray.join("|");
+        compilerOutput.appendLine(sDir + " - script names:\n");
+        compilerOutput.appendLine(sDirScriptNames + "\n\n");
+    }
 
-    // if (textEditor !== undefined){
-    //     //successNotification("output folder set");
-        
-    //     let fullFilePath = textEditor.document.fileName;
-    //     let currentDirectory = path.dirname(fullFilePath);
-    // }
+    if (sDirFunctions !== ""){
+        let sDirFunctionsArray = sDirFunctions.split("|");
+        sDirFunctionsArray.sort();
+        sDirFunctions = sDirFunctionsArray.join("|");
+        compilerOutput.appendLine(sDir + " - script names:\n");
+        compilerOutput.appendLine(sDirFunctions + "\n\n");
+    }
+
+    if (sDirEvents !== ""){
+        let sDirEventsArray = sDirEvents.split("|");
+        sDirEventsArray.sort();
+        sDirEvents = sDirEventsArray.join("|");
+        compilerOutput.appendLine(sDir + " - script names:\n");
+        compilerOutput.appendLine(sDirEvents + "\n\n");
+    }
 
     let scriptNamesArray = scriptNames.split("|");
     let functionsArray = functions.split("|");
@@ -866,7 +987,7 @@ export async function printPscData(){
     functions = functionsArray.join("|");
     events = eventsArray.join("|");
 
-    compilerOutput.appendLine("base game sorce folder - script names:\n");
+    compilerOutput.appendLine("\nbase game sorce folder - script names:\n");
     compilerOutput.appendLine(scriptNames + "\n");
 
     compilerOutput.appendLine("\nbase game sorce folder - functions:\n");

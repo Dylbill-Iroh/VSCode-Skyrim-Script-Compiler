@@ -21,9 +21,16 @@ All notable changes to the "skyrim-script-compiler" extension will be documented
 ### Fixed
 - Removed unnecessary notifications.
 
-## [0.0.4] - 2023-08-24
+## [0.0.4] - 2023-08-28
 ### Added
 - Added "Skyrim Script Compiler - print Psc Data" command.
 
 ### Fixed
 - Removed yet another unnecessary notifications.
+
+## [0.0.4] - 2023-08-28
+### Changed
+- print Psc Data command will now print all functions, events and scriptnames from directory current file is open in, if different than the base game source directory.
+
+### Fixed
+- Removed hopefully the last left over unnecessary debug notification.
