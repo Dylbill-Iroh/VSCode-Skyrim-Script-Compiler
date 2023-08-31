@@ -18,6 +18,10 @@ This is to use for syntax highlighting. Specifically I use it with the Papyrus C
 Navigate to "C:\Users\YourUserName\.vscode\extensions\scrivener07.papyrus-1.0.0\syntaxes\papyrus\papyrus.json". 
 There you can copy the Script Names to "class-types" and functions to "builtin-funcs" to include them with syntax highlighting.
 
+"Skyrim Script Compiler - Set Psc Output Folder(s) For Current Script"
+"Skyrim Script Compiler - Set Pex Output Folder(s) For Current Script"
+These commands allow you to set psc and pex output folder path(s) for the current open script. Meaning whenever you compile the script, if the script has psc or pex output folders set, the .psc and .pex files are copied to those folders. You can save the output folders for the specific script globally or to your workspace. If using multiple folder paths, they should be seprated by a semicolon ;
+
 ## How to use
 To set which game version to compile from, first compile a script from the actual game folder's source scripts. E.G Skyrim/Scripts/Source, Skyrim Special Edition/Scripts/Source or Skyrim Special Edition/Source/Scripts. This will set the compiler, flags and source folder the extension uses. After, you can compile a .psc script from anywhere and this will use the last source, compiler and flags detected.
 
