@@ -1,7 +1,5 @@
 # skyrim-script-compiler README
-Allows VS Code to compile script (.psc) files for skyrim LE and SE / AE. 
-[url=https://www.patreon.com/Dylbill][img]https://imgur.com/dp2f78s.png[/img]
-[/url][url=https://www.patreon.com/Dylbill][size=5]     [/size][/url][size=5][url=https://docs.google.com/document/d/1OfPDJfB_G1FxBqBWNN9qhaPeOG8ebtEQ0XoBkRqdOAU/edit?usp=sharing]﻿
+Allows VS Code to compile script (.psc) files for skyrim LE and SE / AE. ﻿
 
 ## Features
 - Compile script that's currently open, or all scripts in folder that current source script is in.
