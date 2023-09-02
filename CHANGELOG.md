@@ -40,4 +40,11 @@ All notable changes to the "skyrim-script-compiler" extension will be documented
 - Added commands:
 - Set Psc Output Folder(s) For Current Script
 - Set Pex Output Folder(s) For Current Script
-These commands allow you to set psc and pex output folder path(s) for the current open script. Meaning whenever you compile the script, if that script has psc or pex output folders set, the .psc and .pex files are copied to those folders. You can save the output folders for the specific script globally or to your workspace. If using multiple folder paths, they should be seprated by a semicolon ;
+- These commands allow you to set psc and pex output folder path(s) for the current open script. Meaning whenever you compile the script, if that script has psc or pex output folders set, the .psc and .pex files are copied to those folders. You can save the output folders for the specific script globally or to your workspace. If using multiple folder paths, they should be seprated by a semicolon ;
+
+## [0.0.7] - 2023-09-01
+### Added
+- Added commands:
+- Copy psc and pex output folders from current script
+- Paste psc and pex output folders to current script
+- Note when pasting, workspace state takes precedence. If output folders are present for workspace state, it pastes those, otherwise pastes from global state.

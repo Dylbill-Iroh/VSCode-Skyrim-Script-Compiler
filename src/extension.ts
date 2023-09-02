@@ -30,6 +30,14 @@ export function activate(context: vscode.ExtensionContext) {
 		setpexOutputFoldersForScript();
 	});
 
+    let copyOutputFoldersFromScriptFunction = vscode.commands.registerCommand('skyrim-script-compiler.copyOutputFoldersFromScript', async () => {
+		copyOutputFoldersFromScript();
+	});
+    
+    let pasteOutputFoldersToScriptFunction = vscode.commands.registerCommand('skyrim-script-compiler.pasteOutputFoldersToScript', async () => {
+		pasteOutputFoldersToScript();
+	});
+
 	let setpexOutputFolderFunction = vscode.commands.registerCommand('skyrim-script-compiler.SetPexOutputFolder', async () => {
 		setpexOutputFolder();
 	});
@@ -79,6 +87,8 @@ export function activate(context: vscode.ExtensionContext) {
     
 	context.subscriptions.push(setPscOutputFoldersForScriptFunction);
 	context.subscriptions.push(setpexOutputFoldersForScriptFunction);
+	context.subscriptions.push(copyOutputFoldersFromScriptFunction);
+	context.subscriptions.push(pasteOutputFoldersToScriptFunction);
 	context.subscriptions.push(setpexOutputFolderFunction);
 	context.subscriptions.push(addToPexOutputFolderFunction);
 	context.subscriptions.push(setPscOutputFolderFunction);
@@ -362,6 +372,111 @@ export async function setpexOutputFoldersForScript(){
             } 
         });
 
+    } else {
+        errorNotification("No open file found. Open a file to set pex output folder(s) for the file.");
+    }
+}
+
+export async function copyOutputFoldersFromScript(){
+    if (!extensionActive){
+        return;
+    }
+
+    let textEditor = vscode.window.activeTextEditor;
+
+    if (textEditor !== undefined){
+        
+        let fullFilePath = textEditor.document.fileName;
+        let ext = path.extname(fullFilePath);
+
+        if (ext !== ".psc"){
+            errorNotification("current file is a " + ext + " file. Not a .psc file.");
+            return;
+        }
+
+        let pscName = path.basename(fullFilePath);
+        currentContext.globalState.update("SkyrimScriptCompilier_CopiedPscScript", pscName);
+        successNotification("Psc and Pex output folders copied from " + pscName);
+        compilerOutput.appendLine("Psc and Pex output folders copied from " + pscName);
+        compilerOutput.show();
+    } else {
+        errorNotification("No open file found. Open a file to set pex output folder(s) for the file.");
+    }
+}
+
+export async function pasteOutputFoldersToScript(){
+    if (!extensionActive){
+        return;
+    }
+
+    let textEditor = vscode.window.activeTextEditor;
+
+    if (textEditor !== undefined){
+        
+        let fullFilePath = textEditor.document.fileName;
+        let ext = path.extname(fullFilePath);
+
+        if (ext !== ".psc"){
+            errorNotification("current file is a " + ext + " file. Not a .psc file.");
+            return;
+        }
+
+        let pscName = path.basename(fullFilePath);
+        let pexName = pscName.slice(0, pscName.length - 4) + ".pex";
+        let atLeastOneFolderSet = false;
+        let bGlobal = false;
+        let savedPscName = currentContext.globalState.get<string>("SkyrimScriptCompilier_CopiedPscScript");
+
+        if (savedPscName === undefined || savedPscName === ""){
+            errorNotification("No output folders copied");
+            return;
+        }
+
+        let savedPexName = savedPscName.slice(0, savedPscName.length - 4) + ".pex";
+
+        let pscFolders = currentContext.workspaceState.get<string>(savedPscName);
+
+        if (pscFolders === undefined){
+            pscFolders = currentContext.globalState.get<string>(savedPscName);
+            bGlobal = true;
+        }
+
+        if (pscFolders !== undefined && pscFolders !== ""){
+            atLeastOneFolderSet = true;
+            if (bGlobal){ 
+                currentContext.globalState.update(pscName, pscFolders);
+                compilerOutput.appendLine("Psc output folders for " + pscName + " set to " + pscFolders + " in the global state.");
+            } else {
+                currentContext.workspaceState.update(pscName, pscFolders);
+                compilerOutput.appendLine("Psc output folders for " + pscName + " set to " + pscFolders + " in the workspace state.");
+            }
+        } 
+
+        bGlobal = false;
+        let pexFolders = currentContext.workspaceState.get<string>(savedPexName);
+
+        if (pexFolders === undefined){
+            pexFolders = currentContext.globalState.get<string>(savedPexName);
+            bGlobal = true;
+        }
+
+        if (pexFolders !== undefined && pexFolders !== ""){
+            atLeastOneFolderSet = true;
+            if (bGlobal){ 
+                currentContext.globalState.update(pexName, pexFolders);
+                compilerOutput.appendLine("pex output folders for " + pscName + " set to " + pexFolders + " in the global state.");
+            } else {
+                currentContext.workspaceState.update(pexName, pexFolders);
+                compilerOutput.appendLine("pex output folders for " + pscName + " set to " + pexFolders + " in the workspace state.");
+            }
+        } 
+
+        if (atLeastOneFolderSet){
+            successNotification("Output Folders Set for " + pscName);
+            compilerOutput.show();
+        } else {
+            errorNotification("No output folders found for " + savedPscName);
+        }
     } else {
         errorNotification("No open file found. Open a file to set pex output folder(s) for the file.");
     }
