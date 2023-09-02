@@ -1,6 +1,5 @@
 # skyrim-script-compiler README
 Allows VS Code to compile script (.psc) files for skyrim LE and SE / AE. 
-<script type='text/javascript' src='https://storage.ko-fi.com/cdn/widget/Widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('Buy Me a Coffee', '#29abe0', 'G2G6EGXVM');kofiwidget2.draw();</script>
 
 ## Features
 - Compile script that's currently open, or all scripts in folder that current source script is in.
