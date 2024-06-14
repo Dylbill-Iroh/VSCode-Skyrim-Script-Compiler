@@ -50,12 +50,10 @@ export function activate(context: vscode.ExtensionContext) {
 		setPscOutputFolder();
 	});
 
-//=============================================================================================================================================================
 	let addToPscOutputFolderFunction = vscode.commands.registerCommand('skyrim-script-compiler.AddToPscOutputFolder', async () => {
 		addToPscOutputFolder();
 	});
 
-//=============================================================================================================================================================
 	let compileScriptFunction = vscode.commands.registerCommand('skyrim-script-compiler.CompileScript', () => {
 		compileCurrentScript();
 	});
@@ -654,7 +652,14 @@ export function compileCurrentScript(){
 		let ext = path.extname(fullFilePath);
 		
 		if (ext === ".psc"){
-			let pexOutputFolder = vscode.workspace.getConfiguration('DylbillsVsSkyrimScriptCompiler').OutputFolderPex;
+            let clearOutputBeforeCompiling = vscode.workspace.getConfiguration('DylbillsVsSkyrimScriptCompiler').ClearOutputBeforeCompiling;
+			if (clearOutputBeforeCompiling === true){
+                compilerOutput.clear();
+            } else {
+                compilerOutput.append("\n-----------------------------------------------------------------------\n\n");
+            }
+
+            let pexOutputFolder = vscode.workspace.getConfiguration('DylbillsVsSkyrimScriptCompiler').OutputFolderPex;
 			let pexOutputFolders = pexOutputFolder.split(";");
             let outputToSkyrimScriptsFolder = vscode.workspace.getConfiguration('DylbillsVsSkyrimScriptCompiler').AlwaysOutputToSkyrimScriptsFolder;
 			let sDir = path.dirname(fullFilePath);
@@ -821,11 +826,11 @@ export function compileCurrentScript(){
 								}
 								if (hadAnErr){
 									errorNotification("copy error"); //play error sound if any
-									compilerOutput.show();
 								}
 							}
 						}
 					}
+                    compilerOutput.show();
 				});
 			} else {
 				errorNotification('Skyrim root folder not found. Compile a script from data/scripts/source or data/source/scripts first before compiling from an external folder.');
@@ -852,6 +857,13 @@ export async function compileAllScripts(){
         let ext = path.extname(fullFilePath);
         
         if (ext === ".psc"){
+            let clearOutputBeforeCompiling = vscode.workspace.getConfiguration('DylbillsVsSkyrimScriptCompiler').ClearOutputBeforeCompiling;
+			if (clearOutputBeforeCompiling === true){
+                compilerOutput.clear();
+            } else {
+                compilerOutput.append("\n-----------------------------------------------------------------------\n\n");
+            }
+
             let pexOutputFolder = vscode.workspace.getConfiguration('DylbillsVsSkyrimScriptCompiler').OutputFolderPex;
             let pexOutputFolders = pexOutputFolder.split(";");
             let outputToSkyrimScriptsFolder = vscode.workspace.getConfiguration('DylbillsVsSkyrimScriptCompiler').AlwaysOutputToSkyrimScriptsFolder;
@@ -1023,9 +1035,9 @@ export async function compileAllScripts(){
                         
                         if (hadAnErr){
                             errorNotification("copy error"); //play error sound if any
-                            compilerOutput.show();
                         }
                     }
+                    compilerOutput.show();
                 });
             } else {
                 errorNotification('Skyrim root folder not found. Compile a script from data/scripts/source or data/source/scripts first before compiling from an external folder.');
