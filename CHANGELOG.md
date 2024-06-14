@@ -48,3 +48,9 @@ All notable changes to the "skyrim-script-compiler" extension will be documented
 - Copy psc and pex output folders from current script
 - Paste psc and pex output folders to current script
 - Note when pasting, workspace state takes precedence. If output folders are present for workspace state, it pastes those, otherwise pastes from global state.
+
+## [0.0.8] - 2024-06-13
+### Added
+- Added setting to clear output for Skyrim Script Compiler in the panel before compiling so it's always fresh.
+- If not clearing output, puts in a dash line before the new output is generated. 
+- Now always shows output after compiling a script.

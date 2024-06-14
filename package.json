@@ -2,7 +2,7 @@
   "name": "skyrim-script-compiler",
   "displayName": "Skyrim Script Compiler",
   "description": "Compile skyrim papyrus scripts.",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "publisher": "Dylbill",
   "license": "MIT",
 	"keywords": [
@@ -28,6 +28,12 @@
 						"type": "boolean",
 						"default": "true",
 						"description": "If checked, puts compiled .pex scripts in your skyrm or skyrim special edition/data/scripts folder as well as the Pex Output Folders. If no Pex Output Folders are set, .pex files are put here regardless.",
+						"scope": "window"
+					},
+          "DylbillsVsSkyrimScriptCompiler.ClearOutputBeforeCompiling": {
+						"type": "boolean",
+						"default": "false",
+						"description": "If checked, clears output of Skyrim Script Compiler in the panel before compiling so it always shows the fresh output.",
 						"scope": "window"
 					},
           "DylbillsVsSkyrimScriptCompiler.CompileOnSave": {
