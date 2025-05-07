@@ -2,7 +2,7 @@
   "name": "skyrim-script-compiler",
   "displayName": "Skyrim Script Compiler",
   "description": "Compile skyrim papyrus scripts.",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "publisher": "Dylbill",
   "license": "MIT",
 	"keywords": [
@@ -87,6 +87,11 @@
         "description": "Compile all .psc scripts in the folder that the current opened .psc script is in."
       },
       {
+        "command": "skyrim-script-compiler.CompileAllTabs",
+        "title": "Skyrim Script Compiler - Compile all open tabs",
+        "description": "Compile all .psc scripts that are opened in tabs in this vscode window."
+      },
+      {
         "command": "skyrim-script-compiler.setPscOutputFoldersForScript",
         "title": "Skyrim Script Compiler - Set Psc Output Folder(s) For Current Script"
       },
@@ -101,6 +106,11 @@
       {
         "command": "skyrim-script-compiler.pasteOutputFoldersToScript",
         "title": "Skyrim Script Compiler - Paste psc and pex output folders to current script"
+      },
+      {
+        "command": "skyrim-script-compiler.pasteOutputFoldersToTabs",
+        "title": "Skyrim Script Compiler - Paste psc and pex output folders to all tabs",
+        "description": "Paste psc and pex output folders to all .psc files open in the current vscode window."
       },
       {
         "command": "skyrim-script-compiler.SetPexOutputFolder",

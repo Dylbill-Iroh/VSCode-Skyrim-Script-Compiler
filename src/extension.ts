@@ -20,6 +20,8 @@ export function activate(context: vscode.ExtensionContext) {
 		compilerOutput = vscode.window.createOutputChannel("Skyrim Script Compiler");
 	}
 	
+    compilerOutput.appendLine('"skyrim-script-compiler" is now active!');
+
 	loadSkyrimPaths(currentContext);
 	
     let setPscOutputFoldersForScriptFunction = vscode.commands.registerCommand('skyrim-script-compiler.setPscOutputFoldersForScript', async () => {
@@ -37,6 +39,10 @@ export function activate(context: vscode.ExtensionContext) {
     let pasteOutputFoldersToScriptFunction = vscode.commands.registerCommand('skyrim-script-compiler.pasteOutputFoldersToScript', async () => {
 		pasteOutputFoldersToScript();
 	});
+
+    let pasteOutputFoldersToTabsFunction = vscode.commands.registerCommand('skyrim-script-compiler.pasteOutputFoldersToTabs', async () => {
+		pasteOutputFoldersToTabs();
+	}); 
 
 	let setpexOutputFolderFunction = vscode.commands.registerCommand('skyrim-script-compiler.SetPexOutputFolder', async () => {
 		setpexOutputFolder();
@@ -57,7 +63,11 @@ export function activate(context: vscode.ExtensionContext) {
 	let compileScriptFunction = vscode.commands.registerCommand('skyrim-script-compiler.CompileScript', () => {
 		compileCurrentScript();
 	});
-	
+
+	let compileAllTabsFunction = vscode.commands.registerCommand('skyrim-script-compiler.CompileAllTabs', () => {
+		compileAllTabs();
+	});
+
 	vscode.workspace.onDidSaveTextDocument((document) => {
 		if (!extensionActive){
 			return;
@@ -87,11 +97,13 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(setpexOutputFoldersForScriptFunction);
 	context.subscriptions.push(copyOutputFoldersFromScriptFunction);
 	context.subscriptions.push(pasteOutputFoldersToScriptFunction);
+	context.subscriptions.push(pasteOutputFoldersToTabsFunction);
 	context.subscriptions.push(setpexOutputFolderFunction);
 	context.subscriptions.push(addToPexOutputFolderFunction);
 	context.subscriptions.push(setPscOutputFolderFunction);
 	context.subscriptions.push(addToPscOutputFolderFunction);
 	context.subscriptions.push(compileScriptFunction);
+	context.subscriptions.push(compileAllTabsFunction);
 	context.subscriptions.push(compileAllScriptsFunction);
 	context.subscriptions.push(printPscTODOHighlightsFunction);
 }
@@ -175,35 +187,46 @@ export async function showNotification(message: String, timeout: number = 5500) 
     );
 }
 
-export function errorNotification(message: string){
+export function errorNotification(message: string, playSound:boolean = true){
 	compilerOutput.appendLine(message);
-	const soundPath = vscode.workspace.getConfiguration('DylbillsVsSkyrimScriptCompiler').SoundFilePathFail;
-	if (soundPath !== undefined && soundPath !== ""){
-		if (fs.existsSync(soundPath)){
-			let soundCommand = "powershell -c (New-Object Media.SoundPlayer '" + soundPath + "').PlaySync();";
-			cp.exec(soundCommand);
-		}
-	}
+    if (playSound){
+        const soundPath = vscode.workspace.getConfiguration('DylbillsVsSkyrimScriptCompiler').SoundFilePathFail;
+        if (soundPath !== undefined && soundPath !== ""){
+            if (fs.existsSync(soundPath)){
+                let soundCommand = "powershell -c (New-Object Media.SoundPlayer '" + soundPath + "').PlaySync();";
+                cp.exec(soundCommand);
+            }
+        }
+    }
 	compilerOutput.show();
 }
-export function successNotification(message: string){
+
+export function successNotification(message: string, playSound:boolean = true, printToOutput:boolean = false){
 	const soundPath = vscode.workspace.getConfiguration('DylbillsVsSkyrimScriptCompiler').SoundFilePathSuccess;
 	let playedSound:boolean = false;
 
-	if (soundPath !== undefined && soundPath !== ""){
-		if (fs.existsSync(soundPath)){
-			playedSound = true;
-			let soundCommand = "powershell -c (New-Object Media.SoundPlayer '" + soundPath + "').PlaySync();";
-			cp.exec(soundCommand, (err, stdout, stderr) => {
-				if (stderr !== ""){ //failed to play sound
-					showNotification(message);
-				}
-			});
-		}
-	}
+    if (playSound){
+        if (soundPath !== undefined && soundPath !== ""){
+            if (fs.existsSync(soundPath)){
+                playedSound = true;
+                let soundCommand = "powershell -c (New-Object Media.SoundPlayer '" + soundPath + "').PlaySync();";
+                cp.exec(soundCommand, (err, stdout, stderr) => {
+                    if (stderr !== ""){ //failed to play sound
+                        showNotification(message);
+                    }
+                });
+            }
+        }
+    }
+
 	if (!playedSound){
 		showNotification(message);
-	}
+	} 
+
+    if (printToOutput === true){
+        compilerOutput.appendLine(message);
+        compilerOutput.show();
+    }
 }
 
 export async function setpexOutputFolder(){
@@ -476,7 +499,92 @@ export async function pasteOutputFoldersToScript(){
             errorNotification("No output folders found for " + savedPscName);
         }
     } else {
-        errorNotification("No open file found. Open a file to set pex output folder(s) for the file.");
+        errorNotification("No open file found. Open a file to set psc and pex output folder(s) for the file.");
+    }
+}
+
+export async function pasteOutputFoldersToTabs(){
+    if (!extensionActive){
+        return;
+    }
+
+    // let textEditor = vscode.window.activeTextEditor;
+    let savedPscName = currentContext.globalState.get<string>("SkyrimScriptCompilier_CopiedPscScript");
+
+    if (savedPscName === undefined || savedPscName === ""){
+        errorNotification("No output folders copied");
+        return;
+    } 
+
+    let bPscGlobal = false;
+    let pscFolders = currentContext.workspaceState.get<string>(savedPscName);
+    if (pscFolders === undefined){
+        pscFolders = currentContext.globalState.get<string>(savedPscName);
+        bPscGlobal = true;
+    }
+
+    let savedPexName = savedPscName.slice(0, savedPscName.length - 4) + ".pex";
+
+    let bPexGlobal = false;
+    let pexFolders = currentContext.workspaceState.get<string>(savedPexName);
+    if (pexFolders === undefined){
+        pexFolders = currentContext.globalState.get<string>(savedPexName);
+        bPexGlobal = true;
+    }
+
+    let bPscFoldersFound = (pscFolders !== undefined && pscFolders !== "");
+    let bPexFoldersFound = (pexFolders !== undefined && pexFolders !== "");
+
+    if (!bPscFoldersFound && !bPexFoldersFound){
+        errorNotification("Copied psc and pex output folders are empty.");
+        return;
+    }
+
+    let pscPaths:string[] = getFilePathsOfOpenTabs(".psc");
+
+    if (pscPaths.length > 0){
+        for (const fullFilePath of pscPaths) {
+            let ext = path.extname(fullFilePath);
+
+            if (ext !== ".psc"){
+                // errorNotification("current file is a " + ext + " file. Not a .psc file.");
+                continue;
+            }
+    
+            let pscName = path.basename(fullFilePath);
+            let pexName = pscName.slice(0, pscName.length - 4) + ".pex";
+    
+            if (bPscFoldersFound){
+                if (bPscGlobal){ 
+                    currentContext.globalState.update(pscName, pscFolders);
+                    compilerOutput.appendLine("Psc output folders for " + pscName + " set to " + pscFolders + " in the global state.");
+                } else {
+                    currentContext.workspaceState.update(pscName, pscFolders);
+                    compilerOutput.appendLine("Psc output folders for " + pscName + " set to " + pscFolders + " in the workspace state.");
+                }
+            } 
+    
+            if (bPexFoldersFound){
+                if (bPexGlobal){ 
+                    currentContext.globalState.update(pexName, pexFolders);
+                    compilerOutput.appendLine("pex output folders for " + pscName + " set to " + pexFolders + " in the global state.");
+                } else {
+                    currentContext.workspaceState.update(pexName, pexFolders);
+                    compilerOutput.appendLine("pex output folders for " + pscName + " set to " + pexFolders + " in the workspace state.");
+                }
+            } 
+    
+            // if (atLeastOneFolderSet){
+            //     successNotification("Output Folders Set for " + pscName);
+            //     compilerOutput.show();
+            // } else {
+            //     errorNotification("No output folders found for " + savedPscName);
+            // }
+        }
+        successNotification("Done pasting output folders.", true, true);
+        compilerOutput.show();
+    } else {
+        errorNotification("No open .psc files found.");
     }
 }
 
@@ -649,197 +757,44 @@ export function compileCurrentScript(){
 	let textEditor = vscode.window.activeTextEditor;
 	if (textEditor !== undefined){
 		let fullFilePath = textEditor.document.fileName;
-		let ext = path.extname(fullFilePath);
+        let clearOutputBeforeCompiling = vscode.workspace.getConfiguration('DylbillsVsSkyrimScriptCompiler').ClearOutputBeforeCompiling;
+        compilePapyrusScript(fullFilePath, clearOutputBeforeCompiling);
+        // compilerOutput.appendLine("fullFilePath = [" + fullFilePath + "]");
 		
-		if (ext === ".psc"){
-            let clearOutputBeforeCompiling = vscode.workspace.getConfiguration('DylbillsVsSkyrimScriptCompiler').ClearOutputBeforeCompiling;
-			if (clearOutputBeforeCompiling === true){
-                compilerOutput.clear();
-            } else {
-                compilerOutput.append("\n-----------------------------------------------------------------------\n\n");
-            }
-
-            let pexOutputFolder = vscode.workspace.getConfiguration('DylbillsVsSkyrimScriptCompiler').OutputFolderPex;
-			let pexOutputFolders = pexOutputFolder.split(";");
-            let outputToSkyrimScriptsFolder = vscode.workspace.getConfiguration('DylbillsVsSkyrimScriptCompiler').AlwaysOutputToSkyrimScriptsFolder;
-			let sDir = path.dirname(fullFilePath);
-			let importPaths = sDir;
-			let skyrimRootPath = "";
-			let compilerPath = "";
-			let flagsPath = "";
-			let scriptsPath = pexOutputFolders[0];
-
-			let versionIndex = fullFilePath.lastIndexOf(skyrimSE);
-			
-			if (versionIndex !== -1){
-				versionIndex += skyrimSE.length;
-			} else {
-				versionIndex = fullFilePath.lastIndexOf(skyrim);
-				if  (versionIndex !== -1){
-					versionIndex += skyrim.length;
-				}
-			}
-
-			let rootFound:boolean = false;
-
-			if (versionIndex !== -1){
-				skyrimRootPath = fullFilePath.slice(0, versionIndex);
-				compilerPath = skyrimRootPath + "\\Papyrus Compiler\\PapyrusCompiler.exe";
-				if (fs.existsSync(compilerPath)) {
-					// File exists in path
-					rootFound = true;
-
-					if (savedSkyrimRootPath !== skyrimRootPath || savedSkyrimSourcePath !== sDir){
-						savedSkyrimRootPath = skyrimRootPath;
-						savedSkyrimSourcePath = sDir;
-						saveSkyrimPaths(currentContext);
-					}
-					
-					if (scriptsPath === "" || scriptsPath === undefined || outputToSkyrimScriptsFolder){
-						scriptsPath = skyrimRootPath + "\\Data\\Scripts";
-					}
-
-					flagsPath = sDir + "\\TESV_Papyrus_Flags.flg";
-				}
-			} 
-			
-			if (!rootFound || versionIndex === -1){
-				if (savedSkyrimRootPath !== "" && savedSkyrimRootPath !== undefined){
-					compilerPath = savedSkyrimRootPath + "\\Papyrus Compiler\\PapyrusCompiler.exe";
-					
-					if (scriptsPath === "" || scriptsPath === undefined || outputToSkyrimScriptsFolder){
-						scriptsPath = savedSkyrimRootPath + "\\Data\\Scripts";
-					}
-
-					flagsPath = savedSkyrimSourcePath + "\\TESV_Papyrus_Flags.flg";
-					importPaths = (savedSkyrimSourcePath + ";" + sDir);
-				}
-			}
-			
-			let canContinue:boolean = true;
-
-			if (compilerPath === "" || compilerPath === undefined){
-				canContinue = false;
-			}
-			else if (!fs.existsSync(compilerPath)) {
-				canContinue = false;
-			}
-
-			if (canContinue) {
-				let compileCommand = "\"" + compilerPath + "\" \"" + fullFilePath + "\" \"-output=" + scriptsPath + "\" \"-import=" + importPaths + "\" \"-flags=" + flagsPath + "\"";
-
-				cp.exec(compileCommand, (err, stdout, stderr) => {
-					let msg = stdout;
-					compilerOutput.appendLine(msg);
-
-					if (stderr !== ""){
-						errorNotification(stderr);
-					} else {
-						successNotification(path.basename(fullFilePath) + ' compiled succesfully');
-						let pscName = path.basename(fullFilePath);
-                        let pexName = pscName.slice(0, pscName.length - 4) + ".pex";
-
-                        let savedPexFoldersForFile = getSaveFoldersForScript(pexName);
-                        
-                        if (savedPexFoldersForFile !== ""){
-                            if (pexOutputFolder === "" || pexOutputFolder === undefined){
-                                pexOutputFolder = savedPexFoldersForFile;
-                            } else {
-                                pexOutputFolder += (";" + savedPexFoldersForFile);
-                            }
-                        }
-
-                        if (pexOutputFolder !== "" && pexOutputFolder !== undefined){
-                            pexOutputFolders = pexOutputFolder.split(";");
-                
-                            if ((pexOutputFolder !== "" && pexOutputFolder !== undefined) || (savedPexFoldersForFile !== "" && savedPexFoldersForFile !== undefined) ){
-                                let m = pexOutputFolders.length;
-                                for(let i = 0; i < m; i++){
-                                    if(pexOutputFolders[i] === scriptsPath){
-                                        pexOutputFolders.splice(i, 1); //remove folder from pexOutputFolders
-                                    }
-                                }
-
-                                //compilerOutput.appendLine("pexOutputFolders = " + pexOutputFolders);
-                                //compilerOutput.show();
-
-                                m = pexOutputFolders.length;
-                                if (m > 0){
-                                    let hadAnErr = false;
-                                    
-                                    let copyPath = scriptsPath + "\\" + pexName;
-                                    
-                                    for(let i = 0; i < m; i++){
-                                        let destinationPath = pexOutputFolders[i] + "\\" + pexName;
-                                        fs.copyFile(copyPath, destinationPath, (err) => {
-                                            if (err){
-                                                hadAnErr = true;
-                                                compilerOutput.appendLine('failed to copy ' + copyPath + ' to ' + destinationPath);
-                                            } 
-                                        });
-                                    }
-                                    if (hadAnErr){
-                                        errorNotification("copy error"); //play error sound if there is one
-                                        compilerOutput.show();
-                                    }
-                                }
-                            }
-                        }
-
-                        let pscOutputFolder = getSaveFoldersForScript(pscName);
-						let savedPscOutputFolder = vscode.workspace.getConfiguration('DylbillsVsSkyrimScriptCompiler').OutputFolderPsc;
-						
-                        if (savedPscOutputFolder !== undefined && savedPscOutputFolder !== ""){
-                            if (pscOutputFolder === ""){
-                                pscOutputFolder = savedPscOutputFolder;
-                            } else {
-                                (pscOutputFolder += (";" + savedPscOutputFolder));
-                            }
-                        }
-
-                        if (pscOutputFolder !== undefined && pscOutputFolder !== ""){
-							let pscOutputFolders = pscOutputFolder.split(";");
-							let m = pscOutputFolders.length;
-							for(let i = 0; i < m; i++){
-								if(pscOutputFolders[i] === sDir){
-									pscOutputFolders.splice(i, 1);
-								}
-							}
-
-							//compilerOutput.appendLine("pscOutputFolders = " + pscOutputFolders);
-							//compilerOutput.show();
-
-							m = pscOutputFolders.length;
-
-							if (m > 0){
-								let hadAnErr = false;
-
-								for(let i = 0; i < m; i++){
-									let destinationPath = pscOutputFolders[i] + "\\" + pscName;
-									//vscode.window.showInformationMessage('pexName = ' + pexName);
-									fs.copyFile(fullFilePath, destinationPath, (err) => {
-										if (err){
-											hadAnErr = true;
-											compilerOutput.appendLine('failed to copy ' + fullFilePath + ' to ' + destinationPath);
-										} 
-									});
-								}
-								if (hadAnErr){
-									errorNotification("copy error"); //play error sound if any
-								}
-							}
-						}
-					}
-                    compilerOutput.show();
-				});
-			} else {
-				errorNotification('Skyrim root folder not found. Compile a script from data/scripts/source or data/source/scripts first before compiling from an external folder.');
-			}
-		} else {
-			errorNotification(path.basename(fullFilePath) + ' is not a papyrus (.psc) script.');
-		}
 		//vscode.window.showInformationMessage('file path = ' + fullFilePath + " sDir = " + sDir);
 	}
+}
+
+export async function compileAllTabs(){
+    // compilerOutput.appendLine("compileAllTabs: extensionActive is " + extensionActive);
+
+    let pscPaths:string[] = getFilePathsOfOpenTabs(".psc");
+
+    if (pscPaths.length === 0){
+        errorNotification("No open psc files found.");
+    } else {
+        let clearOutputBeforeCompiling = vscode.workspace.getConfiguration('DylbillsVsSkyrimScriptCompiler').ClearOutputBeforeCompiling;
+        if (clearOutputBeforeCompiling){
+            compilerOutput.clear();
+        } 
+
+        let compileErrors:number = 0;
+
+        for(const pscPath of pscPaths){
+            let success = await compilePapyrusScript(pscPath, false, true);
+            if (success === false){
+                compileErrors++;
+            }
+            //delay for 0.25 seconds
+            // await sleep(250);
+        }
+
+        if (compileErrors > 0){
+            errorNotification(compileErrors + " out of " + pscPaths.length + " scripts failed to compile", false);
+        } else {
+            successNotification("compiled all " + pscPaths.length + " scripts successfully", false, true);
+        }
+    }
 }
 
 export async function compileAllScripts(){
@@ -1335,3 +1290,261 @@ export function getNextWhiteSpaceIndex(s:string, startIndex:number): number{
     }
     return -1;
 }
+
+export async function compilePapyrusScript(fullFilePath:string, clearOutput:boolean, playSound:boolean = true): Promise<boolean>{
+    let returnValue:boolean = false;
+    let ext = path.extname(fullFilePath);
+    
+    if (ext === ".psc"){
+        if (clearOutput === true){
+            compilerOutput.clear();
+        } else {
+            compilerOutput.append("\n-----------------------------------------------------------------------\n\n");
+        }
+
+        compilerOutput.appendLine("Starting compile of " + path.basename(fullFilePath) + "\n");
+        compilerOutput.show();
+
+        let pexOutputFolder = vscode.workspace.getConfiguration('DylbillsVsSkyrimScriptCompiler').OutputFolderPex;
+        let pexOutputFolders = pexOutputFolder.split(";");
+        let outputToSkyrimScriptsFolder = vscode.workspace.getConfiguration('DylbillsVsSkyrimScriptCompiler').AlwaysOutputToSkyrimScriptsFolder;
+        let sDir = path.dirname(fullFilePath);
+        let importPaths = sDir;
+        let skyrimRootPath = "";
+        let compilerPath = "";
+        let flagsPath = "";
+        let scriptsPath = pexOutputFolders[0];
+
+        let versionIndex = fullFilePath.lastIndexOf(skyrimSE);
+        
+        if (versionIndex !== -1){
+            versionIndex += skyrimSE.length;
+        } else {
+            versionIndex = fullFilePath.lastIndexOf(skyrim);
+            if  (versionIndex !== -1){
+                versionIndex += skyrim.length;
+            }
+        }
+
+        let rootFound:boolean = false;
+
+        if (versionIndex !== -1){
+            skyrimRootPath = fullFilePath.slice(0, versionIndex);
+            compilerPath = skyrimRootPath + "\\Papyrus Compiler\\PapyrusCompiler.exe";
+            if (fs.existsSync(compilerPath)) {
+                // File exists in path
+                rootFound = true;
+
+                if (savedSkyrimRootPath !== skyrimRootPath || savedSkyrimSourcePath !== sDir){
+                    savedSkyrimRootPath = skyrimRootPath;
+                    savedSkyrimSourcePath = sDir;
+                    saveSkyrimPaths(currentContext);
+                }
+                
+                if (scriptsPath === "" || scriptsPath === undefined || outputToSkyrimScriptsFolder){
+                    scriptsPath = skyrimRootPath + "\\Data\\Scripts";
+                }
+
+                flagsPath = sDir + "\\TESV_Papyrus_Flags.flg";
+            }
+        } 
+        
+        if (!rootFound || versionIndex === -1){
+            if (savedSkyrimRootPath !== "" && savedSkyrimRootPath !== undefined){
+                compilerPath = savedSkyrimRootPath + "\\Papyrus Compiler\\PapyrusCompiler.exe";
+                
+                if (scriptsPath === "" || scriptsPath === undefined || outputToSkyrimScriptsFolder){
+                    scriptsPath = savedSkyrimRootPath + "\\Data\\Scripts";
+                }
+
+                flagsPath = savedSkyrimSourcePath + "\\TESV_Papyrus_Flags.flg";
+                importPaths = (savedSkyrimSourcePath + ";" + sDir);
+            }
+        }
+        
+        let canContinue:boolean = true;
+
+        if (compilerPath === "" || compilerPath === undefined){
+            canContinue = false;
+        }
+        else if (!fs.existsSync(compilerPath)) {
+            canContinue = false;
+        }
+
+        if (canContinue) {
+            let compileCommand = "\"" + compilerPath + "\" \"" + fullFilePath + "\" \"-output=" + scriptsPath + "\" \"-import=" + importPaths + "\" \"-flags=" + flagsPath + "\"";
+            // compilerOutput.appendLine("compileCommand = [" + compileCommand + "]");
+
+            await new Promise<void>((resolve, reject) => {
+                cp.exec(compileCommand, (err, stdout, stderr) => {
+                    let msg = stdout;
+                    compilerOutput.appendLine(msg);
+
+                    if (stderr !== ""){
+                        errorNotification(stderr, playSound);
+                    } else {
+                        returnValue = true;
+                        successNotification(path.basename(fullFilePath) + ' compiled succesfully', playSound);
+                            
+                        let pscName = path.basename(fullFilePath);
+                        let pexName = pscName.slice(0, pscName.length - 4) + ".pex";
+
+                        let savedPexFoldersForFile = getSaveFoldersForScript(pexName);
+                        
+                        if (savedPexFoldersForFile !== ""){
+                            if (pexOutputFolder === "" || pexOutputFolder === undefined){
+                                pexOutputFolder = savedPexFoldersForFile;
+                            } else {
+                                pexOutputFolder += (";" + savedPexFoldersForFile);
+                            }
+                        }
+
+                        if (pexOutputFolder !== "" && pexOutputFolder !== undefined){
+                            pexOutputFolders = pexOutputFolder.split(";");
+                
+                            if ((pexOutputFolder !== "" && pexOutputFolder !== undefined) || (savedPexFoldersForFile !== "" && savedPexFoldersForFile !== undefined) ){
+                                let m = pexOutputFolders.length;
+                                for(let i = 0; i < m; i++){
+                                    if(pexOutputFolders[i] === scriptsPath){
+                                        pexOutputFolders.splice(i, 1); //remove folder from pexOutputFolders
+                                    }
+                                }
+
+                                //compilerOutput.appendLine("pexOutputFolders = " + pexOutputFolders);
+                                //compilerOutput.show();
+
+                                m = pexOutputFolders.length;
+                                if (m > 0){
+                                    let hadAnErr = false;
+                                    
+                                    let copyPath = scriptsPath + "\\" + pexName;
+                                    
+                                    for(let i = 0; i < m; i++){
+                                        let destinationPath = pexOutputFolders[i] + "\\" + pexName;
+                                        fs.copyFile(copyPath, destinationPath, (err) => {
+                                            if (err){
+                                                hadAnErr = true;
+                                                compilerOutput.appendLine('failed to copy ' + copyPath + ' to ' + destinationPath);
+                                            } 
+                                            resolve();
+                                        });
+                                    }
+                                    if (hadAnErr){
+                                        errorNotification("copy error", playSound); //play error sound if there is one
+                                        compilerOutput.show();
+                                    }
+                                }
+                            }
+                        }
+
+                        let pscOutputFolder = getSaveFoldersForScript(pscName);
+                        let savedPscOutputFolder = vscode.workspace.getConfiguration('DylbillsVsSkyrimScriptCompiler').OutputFolderPsc;
+                        
+                        if (savedPscOutputFolder !== undefined && savedPscOutputFolder !== ""){
+                            if (pscOutputFolder === ""){
+                                pscOutputFolder = savedPscOutputFolder;
+                            } else {
+                                (pscOutputFolder += (";" + savedPscOutputFolder));
+                            }
+                        }
+
+                        if (pscOutputFolder !== undefined && pscOutputFolder !== ""){
+                            let pscOutputFolders = pscOutputFolder.split(";");
+                            let m = pscOutputFolders.length;
+                            for(let i = 0; i < m; i++){
+                                if(pscOutputFolders[i] === sDir){
+                                    pscOutputFolders.splice(i, 1);
+                                }
+                            }
+
+                            //compilerOutput.appendLine("pscOutputFolders = " + pscOutputFolders);
+                            //compilerOutput.show();
+
+                            m = pscOutputFolders.length;
+
+                            if (m > 0){
+                                let hadAnErr = false;
+
+                                for(let i = 0; i < m; i++){
+                                    let destinationPath = pscOutputFolders[i] + "\\" + pscName;
+                                    //vscode.window.showInformationMessage('pexName = ' + pexName);
+                                    fs.copyFile(fullFilePath, destinationPath, (err) => {
+                                        if (err){
+                                            hadAnErr = true;
+                                            compilerOutput.appendLine('failed to copy ' + fullFilePath + ' to ' + destinationPath);
+                                        } 
+                                        resolve();
+                                    });
+                                }
+                                if (hadAnErr){
+                                    errorNotification("copy error", playSound); //play error sound if there is one
+                                }
+                            }
+                        }
+                    }
+                    compilerOutput.show();
+                    resolve(); //resolve no matter what
+                });
+            });
+        } else {
+            errorNotification('Skyrim root folder not found. Compile a script from data/scripts/source or data/source/scripts first before compiling from an external folder.', playSound);
+            compilerOutput.show();
+        }
+    } else {
+        errorNotification(path.basename(fullFilePath) + ' is not a papyrus (.psc) script.', playSound);
+        compilerOutput.show();
+    }
+
+    return returnValue;
+}
+
+//if extension is "." returns all open file paths, otherwise use ".psc", ".txt" ect to filter file types.
+export function getFilePathsOfOpenTabs(extension:string = "."): string[] {
+    let pscPaths:string[] = [];
+
+	for (const tabGroup of vscode.window.tabGroups.all) {
+        for (const tab of tabGroup.tabs) {
+            const tabInput = tab.input;
+            if (tabInput instanceof vscode.TabInputText) {
+                let filePath = tabInput.uri.path;
+                if (filePath.at(0) === "/"){
+                    filePath = filePath.substring(1);
+                }
+
+                filePath = filePath.replace(/\//g, "\\");
+
+                let ext = path.extname(filePath);
+                if (ext === extension || extension === "."){
+                    pscPaths.push(filePath);
+                }
+            }
+        }
+    }
+
+    return pscPaths;
+}
+
+async function sleep(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+} 
+
+// export function stringReplaceAll(targetString: string, searchValue:string, replaceValue:string): string{
+//     let s = targetString;
+//     if (s === ""){
+//         return s;
+//     }
+
+//     if (searchValue === "" || searchValue === replaceValue){
+//         return s;
+//     }
+
+//     let index:number = s.indexOf(searchValue);
+
+//     while (index > -1) {
+//         s.replace(searchValue, replaceValue);
+//         index = s.indexOf(searchValue);
+//         compilerOutput.append(searchValue + " index = " + index);
+//     }
+
+//     return s;
+// }

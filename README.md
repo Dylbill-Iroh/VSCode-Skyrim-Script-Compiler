@@ -2,7 +2,7 @@
 Allows VS Code to compile script (.psc) files for skyrim LE and SE / AE. 
 
 ## Features
-- Compile script that's currently open, or all scripts in folder that current source script is in.
+- Compile script that's currently open, or all scripts in folder that current source script is in, or all .psc files in the current vscode window.
 - Play custom sounds for compile success or failure.
 - Auto detects which compilier to use based on where the source script is located.
 - Option to auto compile .psc script when saving.
@@ -11,6 +11,9 @@ Allows VS Code to compile script (.psc) files for skyrim LE and SE / AE.
 
 ## Commands 
 Access commands by pressing ctrl + shift + p and search for Skyrim Script Compiler
+- "Skyrim Script Compiler - Compile Current Script", compiles current opened .psc script. 
+- "Skyrim Script Compiler - Compile all scripts in current folder", compile all .psc scripts in the folder that the current opened .psc script is in.
+- "Skyrim Script Compiler - Compile all open tabs", compiles all .psc scripts that are opened in the current vscode window.
 
 - "Skyrim Script Compiler - print Psc Data" command will print native or global function and event names to output seperated by "|", from the last detected base game source scripts folder.
 
@@ -24,6 +27,7 @@ There you can copy the Script Names to "class-types" and functions to "builtin-f
 
 - "Skyrim Script Compiler - Copy psc and pex output folders from current script"
 - "Skyrim Script Compiler - Paste psc and pex output folders to current script"
+- "Skyrim Script Compiler - Paste psc and pex output folders to all tabs" will paste the current copied psc and pex output folders to all .psc files opened in the current vscode window.
 - Note when pasting, workspace state takes precedence. If output folders are present for workspace state, it pastes those, otherwise pastes from global state.
 
 ## How to use
@@ -43,5 +47,9 @@ Skyrim Special Edition/Source/Scripts
 
 ## Extension Settings
 fail or success sounds should be full path to sound. If no path is present, or the file doesn't exist, no sound is played.
+
+## Support Me
+- [Buy me a Coffee](https://ko-fi.com/dylbill)
+- [Become a Patron](https://www.patreon.com/Dylbill)
 
 **Enjoy!**

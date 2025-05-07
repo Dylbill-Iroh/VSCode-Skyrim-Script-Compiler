@@ -54,3 +54,9 @@ All notable changes to the "skyrim-script-compiler" extension will be documented
 - Added setting to clear output for Skyrim Script Compiler in the panel before compiling so it's always fresh.
 - If not clearing output, puts in a dash line before the new output is generated. 
 - Now always shows output after compiling a script.
+
+## [0.0.9] - 2025-05-07
+### Added
+- Added commands:
+- Paste psc and pex output folders to all tabs
+- Compile all open tabs
